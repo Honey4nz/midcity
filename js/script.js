@@ -213,7 +213,7 @@
   // Fact Counter
   function factCounter() {
     if ($(".fact-counter").length) {
-      $(".fact-counter .counter-column.animated").each(function () {
+      $(".fact-counter .counter-column").each(function () {
         var $t = $(this),
           n = $t.find(".count-text").attr("data-stop"),
           r = parseInt($t.find(".count-text").attr("data-speed"), 10);
@@ -241,7 +241,7 @@
       });
     }
   }
-
+  //this is new
   //Tabs Box
   if ($(".tabs-box").length) {
     //Tabs
@@ -643,20 +643,42 @@
       boxClass: "wow", // animated element css class (default is wow)
       animateClass: "animated", // animation css class (default is animated)
       offset: 0, // distance to the element when triggering the animation (default is 0)
-      mobile: false, // trigger animations on mobile devices (default is true)
+      mobile: true, // trigger animations on mobile devices (default is true)
       live: true, // act on asynchronously loaded content (default is true)
     });
     wow.init();
   }
 
+  // trigger on specific width
+  function triggerHandler() {
+    // Only initialize the observer on the About page
+    const targetSection = document.querySelector(".fact-counter");
+    const observer = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            factCounter();
+            observer.disconnect(); // Disconnect after the function is triggered
+          }
+        });
+      },
+      {
+        threshold: 0.5,
+      }
+    );
+
+    observer.observe(targetSection);
+  }
   /* ==========================================================================
    When document is Scrollig, do
    ========================================================================== */
 
   $(window).on("scroll", function () {
     headerStyle();
-    factCounter();
+    triggerHandler();
   });
+
+  $(window).on("scroll");
 
   /* ==========================================================================
    When Window is resized
